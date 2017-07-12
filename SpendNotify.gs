@@ -88,25 +88,38 @@ function SpendNotify() {
   } else {
     message += '(おとといと同額)';
   }
-  
+  var i = 0;
   message += '\n【内訳】'
+  //ここから下ももっと賢く書けるでしょ
   if(money1.cat1 != 0) {
-    message += '' + DAT[2][7] + ': ' + Separate(Math.round(money1.cat1)) + '円';
+    if(i != 0) { message += ' / ' };
+    i++;
+    message += DAT[2][7] + ': ' + Separate(Math.round(money1.cat1)) + '円';
   }
   if(money1.cat2 != 0) {
-    message += ' / ' + DAT[2][8] + ': ' + Separate(Math.round(money1.cat2)) + '円';
+    if(i != 0) { message += ' / ' };
+    i++;
+    message += DAT[2][8] + ': ' + Separate(Math.round(money1.cat2)) + '円';
   }
   if(money1.cat3 != 0) {
-    message += ' / ' + DAT[2][9] + ': ' + Separate(Math.round(money1.cat3)) + '円';
+    if(i != 0) { message += ' / ' };
+    i++;
+    message += DAT[2][9] + ': ' + Separate(Math.round(money1.cat3)) + '円';
   }
   if(money1.cat4 != 0) {
-    message += ' / ' + DAT[2][10] + ': ' + Separate(Math.round(money1.cat4)) + '円';
+    if(i != 0) { message += ' / ' };
+    i++;
+    message += DAT[2][10] + ': ' + Separate(Math.round(money1.cat4)) + '円';
   }
   if(money1.cat5 != 0) {
-    message += ' / ' + DAT[2][11] + ': ' + Separate(Math.round(money1.cat5)) + '円';
+    if(i != 0) { message += ' / ' };
+    i++;
+    message += DAT[2][11] + ': ' + Separate(Math.round(money1.cat5)) + '円';
   }
   if(money1.cat6 != 0) {
-    message += ' / ' + DAT[2][12] + ': ' + Separate(Math.round(money1.cat6)) + '円';
+    if(i != 0) { message += ' / ' };
+    i++;
+    message += DAT[2][12] + ': ' + Separate(Math.round(money1.cat6)) + '円';
   }
   
   message += ' #sustny_memo';
