@@ -40,30 +40,15 @@ function DailySpend(d) {
   }
   /* ----- 開始行の検索 ----- */
   /* ----- 計算 ----- */
-  var money = new Object(); //オブジェクトの宣言
-  money.cat1 = 0, money.cat2 = 0, money.cat3 = 0, money.cat4 = 0, money.cat5 = 0, money.cat6 = 0; //数値として初期化
+  var money = [0, 0, 0, 0, 0, 0]; //クソダサ初期化
   for(i=sRow;i<DAT.length;i++) {
     target = Utilities.formatDate(DAT[i][1], 'JST', 'yyyy/MM/dd');
     if(target != d) { break; }
-    switch (DAT[i][2]) {
-      case DAT[2][7]:
-        money.cat1 += DAT[i][4];
-        break;
-      case DAT[2][8]:
-        money.cat2 += DAT[i][4];
-        break;
-      case DAT[2][9]:
-        money.cat3 += DAT[i][4];
-        break;
-      case DAT[2][10]:
-        money.cat4 += DAT[i][4];
-        break;
-      case DAT[2][11]:
-        money.cat5 += DAT[i][4];
-        break;
-      case DAT[2][12]:
-        money.cat6 += DAT[i][4];
-        break;
+    
+    for(var j=0;j<6;j++) {
+      if(DAT[i][2] == DAT[2][j+7]) {
+        money[j] += DAT[i][4];
+      }
     }
   }
   /* ----- 計算 ----- */
@@ -76,8 +61,9 @@ function SpendNotify() {
   /* --- 家計簿 --- */
   var money1 = DailySpend(DAYm1);
   var money2 = DailySpend(DAYm2);
-  var total1 = Math.round(money1.cat1 + money1.cat2 + money1.cat3 + money1.cat4 + money1.cat5 + money1.cat6); //ここもっと賢く計算できない？
-  var total2 = Math.round(money2.cat1 + money2.cat2 + money2.cat3 + money2.cat4 + money2.cat5 + money2.cat6); //ここも
+  
+  var total1 = money1.reduce(function(x, y) { return x + y; }); //reduceで配列の全要素の合計を出す
+  var total2 = money2.reduce(function(x, y) { return x + y; }); //同上
   var diff = Math.round(total1 - total2);
   
   var message = '[自動送信]昨日の支出: ' + Separate(total1) + '円';
@@ -88,40 +74,14 @@ function SpendNotify() {
   } else {
     message += '(おとといと同額)';
   }
-  var i = 0;
-  message += '\n【内訳】'
-  //ここから下ももっと賢く書けるでしょ
-  if(money1.cat1 != 0) {
-    if(i != 0) { message += ' / ' };
-    i++;
-    message += DAT[2][7] + ': ' + Separate(Math.round(money1.cat1)) + '円';
-  }
-  if(money1.cat2 != 0) {
-    if(i != 0) { message += ' / ' };
-    i++;
-    message += DAT[2][8] + ': ' + Separate(Math.round(money1.cat2)) + '円';
-  }
-  if(money1.cat3 != 0) {
-    if(i != 0) { message += ' / ' };
-    i++;
-    message += DAT[2][9] + ': ' + Separate(Math.round(money1.cat3)) + '円';
-  }
-  if(money1.cat4 != 0) {
-    if(i != 0) { message += ' / ' };
-    i++;
-    message += DAT[2][10] + ': ' + Separate(Math.round(money1.cat4)) + '円';
-  }
-  if(money1.cat5 != 0) {
-    if(i != 0) { message += ' / ' };
-    i++;
-    message += DAT[2][11] + ': ' + Separate(Math.round(money1.cat5)) + '円';
-  }
-  if(money1.cat6 != 0) {
-    if(i != 0) { message += ' / ' };
-    i++;
-    message += DAT[2][12] + ': ' + Separate(Math.round(money1.cat6)) + '円';
-  }
   
+  message += '\n【内訳】';
+  for(var i=0;i<6;i++) {
+    if(money1[i] != 0) {
+      if(i != 0) { message += ' / '; }
+      message += DAT[2][i+7] + ': ' + Separate(Math.round(money1[i])) + '円';
+    }
+  }
   message += ' #sustny_memo';
   
   if(total1 == 0) {
