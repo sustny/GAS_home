@@ -55,6 +55,10 @@ function DailySpend(d) {
   return money;
 }
 
+function MonthlySpend() {
+  
+}
+
 function SpendNotify() {
   var START = new Date();
   
