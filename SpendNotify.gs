@@ -5,23 +5,37 @@
 //
 
 /* ---------------------------------------- Utility ---------------------------------------- */
-var TODAY = Utilities.formatDate(new Date(), 'JST', 'yyyy/MM/dd');
+/* ----- Today ----- */
+var year = Utilities.formatDate(new Date(), 'JST', 'yyyy');
+var month = Utilities.formatDate(new Date(), 'JST', 'M');
+var day = Utilities.formatDate(new Date(), 'JST', 'd');
+var today = Utilities.formatDate(new Date(year, month-1, day), 'JST', 'yyyy/MM/dd');
+/* ----- Today ----- */
 
-var DAYm1 = new Date(); //DAYm1 = (TO)DAYm(inus)1
-DAYm1.setDate(DAYm1.getDate() - 1);
-DAYm1 = Utilities.formatDate(DAYm1, 'JST', 'yyyy/MM/dd');
+/* ----- Yesterday ----- */
+var m1 = new Date();
+m1.setDate(m1.getDate() - 1);
+var m1year = Utilities.formatDate(m1, 'JST', 'yyyy');
+var m1month = Utilities.formatDate(m1, 'JST', 'M');
+var m1day = Utilities.formatDate(m1, 'JST', 'd');
+m1 = Utilities.formatDate(new Date(m1year, m1month-1, m1day), 'JST', 'yyyy/MM/dd');
+/* ----- Yesterday ----- */
 
-var DAYm2 = new Date();
-DAYm2.setDate(DAYm2.getDate() - 2);
-DAYm2 = Utilities.formatDate(DAYm2, 'JST', 'yyyy/MM/dd');
-
-var YEAR = new Date();
-YEAR.setDate(YEAR.getDate() - 1);
-YEAR = parseInt(Utilities.formatDate(YEAR, 'JST', 'yyyy'));
-if(YEAR < 4) { YEAR++; }
+/* ----- 2 days ago ----- */
+var m2 = new Date();
+m2.setDate(m2.getDate() - 2);
+var m2year = Utilities.formatDate(m2, 'JST', 'yyyy');
+var m2month = Utilities.formatDate(m2, 'JST', 'M');
+var m2day = Utilities.formatDate(m2, 'JST', 'd');
+m2 = Utilities.formatDate(new Date(m2year, m2month-1, m2day), 'JST', 'yyyy/MM/dd');
+/* ----- 2 days ago ----- */
 
 var FILE = SpreadsheetApp.openById('1oaKob_ycQ49URUd0ox78jrH5-_3ZCiXdDp2IBKdl8SE');
-var SHEET = FILE.getSheetByName(String(YEAR));
+if(month > 3) {
+  var SHEET = FILE.getSheetByName(String(year));
+} else {
+  var SHEET = FILE.getSheetByName(String(year-1));
+}
 var DAT = SHEET.getDataRange().getValues();
 /* ---------------------------------------- Utility ---------------------------------------- */
 
@@ -56,15 +70,21 @@ function DailySpend(d) {
 }
 
 function MonthlySpend() {
+  /* ----- 開始行の検索 ----- */
+  /* ----- 開始行の検索 ----- */
   
+  /* ----- 計算 ----- */
+  /* ----- 計算 ----- */
+  
+  return 0; //あとでなんか返させる
 }
 
 function SpendNotify() {
   var START = new Date();
   
   /* --- 家計簿 --- */
-  var money1 = DailySpend(DAYm1);
-  var money2 = DailySpend(DAYm2);
+  var money1 = DailySpend(m1);
+  var money2 = DailySpend(m2);
   
   var total1 = money1.reduce(function(x, y) { return x + y; }); //reduceで配列の全要素の合計を出す
   var total2 = money2.reduce(function(x, y) { return x + y; }); //同上
