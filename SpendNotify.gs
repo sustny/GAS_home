@@ -73,27 +73,48 @@ function DailySpend(d) {
 }
 
 function MonthlySpend() {
-  var d = Utilities.formatDate(new Date(year,month-2,1), 'JST', 'yyyy/MM/dd'); //Test code
+  var start = Utilities.formatDate(new Date(year,month-2,1), 'JST', 'yyyy/MM/dd'); //Test code
+  var end = Utilities.formatDate(new Date(year,month-1,1), 'JST', 'yyyy/MM/dd'); //Test code
   /* ----- 開始行の検索 ----- */
   for(var i=1;i<DAT.length;i++) {
     var target = Utilities.formatDate(DAT[i][1], 'JST', 'yyyy/MM/dd');
-    if(target >= d) {
+    if(target >= start) {
       var sRow = i; //対象開始行
       break;
     }
   }
   /* ----- 開始行の検索 ----- */
   
+  /* ----- 終了行の検索 ----- */
+  for(var i=sRow;i<DAT.length;i++) {
+    var target = Utilities.formatDate(DAT[i][1], 'JST', 'yyyy/MM/dd');
+    if(target >= end) {
+      var eRow = i-1; //対象最終行
+      break;
+    }
+  }
+  /* ----- 終了行の検索 ----- */
+  
   /* ----- 計算 ----- */
+  var money = [0, 0, 0, 0, 0, 0]; //クソダサ初期化
+  for(i=sRow;i<=eRow;i++) {
+    for(var j=0;j<6;j++) {
+      if(DAT[i][2] == DAT[2][j+7]) {
+        money[j] += DAT[i][4];
+      }
+    }
+  }
   /* ----- 計算 ----- */
   
-  return 0; //あとでなんか返させる
+  Logger.log(Math.round(money[0]) + ' ' + Math.round(money[1]) + ' ' + Math.round(money[2]) + ' ' + Math.round(money[3]) + ' ' + Math.round(money[4]) + ' ' + Math.round(money[5]));
+  
+  return money;
 }
 
 function SpendNotify() {
   var START = new Date();
   
-  /* --- 家計簿 --- */
+  /* --- 日報 --- */
   var money1 = DailySpend(m1);
   var money2 = DailySpend(m2);
   
@@ -123,7 +144,10 @@ function SpendNotify() {
     return 0;
   }
   Twitter(message);
-  /* --- 家計簿 --- */
+  /* --- 日報 --- */
+  
+  /* --- 週報 --- */
+  /* --- 週報 --- */
   
   Logger.log('=== SCORE : ' + (new Date() - START)/1000 + ' (sec) ===');
 }
