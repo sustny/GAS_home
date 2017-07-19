@@ -30,12 +30,15 @@ var m2day = Utilities.formatDate(m2, 'JST', 'd');
 m2 = Utilities.formatDate(new Date(m2year, m2month-1, m2day), 'JST', 'yyyy/MM/dd');
 /* ----- 2 days ago ----- */
 
-var FILE = SpreadsheetApp.openById('1oaKob_ycQ49URUd0ox78jrH5-_3ZCiXdDp2IBKdl8SE');
-if(month > 3) {
-  var SHEET = FILE.getSheetByName(String(year));
-} else {
-  var SHEET = FILE.getSheetByName(String(year-1));
+/* ----- season ----- */
+var season = year;
+if(month < 4) {
+  season -= 1;
 }
+/* ----- season ----- */
+
+var FILE = SpreadsheetApp.openById('1oaKob_ycQ49URUd0ox78jrH5-_3ZCiXdDp2IBKdl8SE');
+var SHEET = FILE.getSheetByName(String(season));
 var DAT = SHEET.getDataRange().getValues();
 /* ---------------------------------------- Utility ---------------------------------------- */
 
@@ -70,7 +73,7 @@ function DailySpend(d) {
 }
 
 function MonthlySpend() {
-  var d = Utilities.formatDate(new Date(2017,month-2,1), 'JST', 'yyyy/MM/dd'); //Test code
+  var d = Utilities.formatDate(new Date(year,month-2,1), 'JST', 'yyyy/MM/dd'); //Test code
   /* ----- 開始行の検索 ----- */
   for(var i=1;i<DAT.length;i++) {
     var target = Utilities.formatDate(DAT[i][1], 'JST', 'yyyy/MM/dd');
