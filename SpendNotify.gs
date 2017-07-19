@@ -70,7 +70,15 @@ function DailySpend(d) {
 }
 
 function MonthlySpend() {
+  var d = Utilities.formatDate(new Date(2017,month-2,1), 'JST', 'yyyy/MM/dd'); //Test code
   /* ----- 開始行の検索 ----- */
+  for(var i=1;i<DAT.length;i++) {
+    var target = Utilities.formatDate(DAT[i][1], 'JST', 'yyyy/MM/dd');
+    if(target >= d) {
+      var sRow = i; //対象開始行
+      break;
+    }
+  }
   /* ----- 開始行の検索 ----- */
   
   /* ----- 計算 ----- */
@@ -112,7 +120,6 @@ function SpendNotify() {
     return 0;
   }
   Twitter(message);
-  
   /* --- 家計簿 --- */
   
   Logger.log('=== SCORE : ' + (new Date() - START)/1000 + ' (sec) ===');
