@@ -4,6 +4,11 @@
 // Created by sustny(http://sustny.me/)
 //
 
+/* ------------------------------------ Imported Library ------------------------------------ */
+// OAuth: 1CXDCY5sqT9ph64fFwSzVtXnbjpSfWdRymafDrtIZ7Z_hwysTY7IIhi7s
+// Moment: MHMchiX6c1bwSqGM1PZiW_PxhMjh3Sh48
+/* ------------------------------------ Imported Library ------------------------------------ */
+
 /* ---------------------------------------- Utility ---------------------------------------- */
 /* ----- Today ----- */
 var year = Utilities.formatDate(new Date(), 'JST', 'yyyy');
@@ -106,9 +111,19 @@ function MonthlySpend() {
   }
   /* ----- 計算 ----- */
   
-  Logger.log(Math.round(money[0]) + ' ' + Math.round(money[1]) + ' ' + Math.round(money[2]) + ' ' + Math.round(money[3]) + ' ' + Math.round(money[4]) + ' ' + Math.round(money[5]));
-  
   return money;
+}
+
+function SpendNotify_Test() {
+  var monthSpend = MonthlySpend();
+  Logger.log(monthSpend);
+  
+  var total = monthSpend.reduce(function(x, y) { return x + y; });
+  
+  Logger.log(Math.round(total));
+  
+  var m = Moment.moment('2016/0/8');
+  Logger.log(m.format('YYYY/M/D'));
 }
 
 function SpendNotify() {
@@ -146,8 +161,11 @@ function SpendNotify() {
   Twitter(message);
   /* --- 日報 --- */
   
-  /* --- 週報 --- */
-  /* --- 週報 --- */
+  /* --- 月報 --- */
+  if(day == 1) { //毎月1日のみ実行
+    //この辺を書いていくんだけど前月との比較をするかどうかが悩みどころ
+  }
+  /* --- 月報 --- */
   
   Logger.log('=== SCORE : ' + (new Date() - START)/1000 + ' (sec) ===');
 }
