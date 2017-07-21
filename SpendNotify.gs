@@ -35,6 +35,24 @@ var m2day = Utilities.formatDate(m2, 'JST', 'd');
 m2 = Utilities.formatDate(new Date(m2year, m2month-1, m2day), 'JST', 'yyyy/MM/dd');
 /* ----- 2 days ago ----- */
 
+/* ----- last month ----- */
+var Month_m1 = Moment.moment([year, month-2, 1]);
+if(month == 1) {
+  Month_m1 = Moment.moment([year-1, 11, 1]);
+}
+Month_m1 = Month_m1.format('YYYY/M/D');
+/* ----- last month ----- */
+
+/* ----- 2 months ago ----- */
+var Month_m2 = Moment.moment([year, month-3, 1]);
+if(month == 1) {
+  Month_m2 = Moment.moment([year-1, 10, 1]);
+} else if(month == 2) {
+  Month_m2 = Moment.moment([year-1, 11, 1]);
+}
+Month_m2 = Month_m2.format('YYYY/M/D');
+/* ----- 2 months ago ----- */
+
 /* ----- season ----- */
 var season = year;
 if(month < 4) {
@@ -122,8 +140,11 @@ function SpendNotify_Test() {
   
   Logger.log(Math.round(total));
   
-  var m = Moment.moment('2016/0/8');
+  var m = Moment.moment('2016/1/8');
   Logger.log(m.format('YYYY/M/D'));
+  
+  Logger.log(Month_m1);
+  Logger.log(Month_m2);
 }
 
 function SpendNotify() {
