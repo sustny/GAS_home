@@ -10,53 +10,22 @@
 /* ------------------------------------ Imported Library ------------------------------------ */
 
 /* ---------------------------------------- Utility ---------------------------------------- */
-/* ----- Today ----- */
-var year = Utilities.formatDate(new Date(), 'JST', 'yyyy');
-var month = Utilities.formatDate(new Date(), 'JST', 'M');
-var day = Utilities.formatDate(new Date(), 'JST', 'd');
-var today = Utilities.formatDate(new Date(year, month-1, day), 'JST', 'yyyy/MM/dd');
-/* ----- Today ----- */
+var Now = Moment.moment(); //Now
 
-/* ----- Yesterday ----- */
-var m1 = new Date();
-m1.setDate(m1.getDate() - 1);
-var m1year = Utilities.formatDate(m1, 'JST', 'yyyy');
-var m1month = Utilities.formatDate(m1, 'JST', 'M');
-var m1day = Utilities.formatDate(m1, 'JST', 'd');
-m1 = Utilities.formatDate(new Date(m1year, m1month-1, m1day), 'JST', 'yyyy/MM/dd');
-/* ----- Yesterday ----- */
+/* ----- Today's Date ----- */
+var year = Now.format('YYYY');
+var month = Now.format('M');
+var day = Now.format('D');
+/* ----- Today's Date ----- */
 
-/* ----- 2 days ago ----- */
-var m2 = new Date();
-m2.setDate(m2.getDate() - 2);
-var m2year = Utilities.formatDate(m2, 'JST', 'yyyy');
-var m2month = Utilities.formatDate(m2, 'JST', 'M');
-var m2day = Utilities.formatDate(m2, 'JST', 'd');
-m2 = Utilities.formatDate(new Date(m2year, m2month-1, m2day), 'JST', 'yyyy/MM/dd');
-/* ----- 2 days ago ----- */
+var today = Now.format('YYYY/MM/DD'); //Today
+var Day_m1 = Now.clone().subtract(1,'days').format('YYYY/MM/DD'); //Yesterday
+var Day_m2 = Now.clone().subtract(2,'days').format('YYYY/MM/DD'); //2 days ago
 
-/* ----- Begging the this month ----- */
-var Month_s = Moment.moment([year, month-1, 1]);
-Month_s = Month_s.format('YYYY/MM/DD');
-/* ----- Begging the this month ----- */
-
-/* ----- Begging the last month ----- */
-var Month_m1 = Moment.moment([year, month-2, 1]);
-if(month == 1) {
-  Month_m1 = Moment.moment([year-1, 11, 1]);
-}
-Month_m1 = Month_m1.format('YYYY/MM/DD');
-/* ----- last month ----- */
-
-/* ----- Begging the 2 months ago ----- */
-var Month_m2 = Moment.moment([year, month-3, 1]);
-if(month == 1) {
-  Month_m2 = Moment.moment([year-1, 10, 1]);
-} else if(month == 2) {
-  Month_m2 = Moment.moment([year-1, 11, 1]);
-}
-Month_m2 = Month_m2.format('YYYY/MM/DD');
-/* ----- 2 months ago ----- */
+var sMonth = Moment.moment([year, month-1, 1]);
+var sMonth_m1 = sMonth.clone().subtract(1,'months').format('YYYY/MM/DD'); //Begging the last month
+var sMonth_m2 = sMonth.clone().subtract(2,'months').format('YYYY/MM/DD'); //Begging the 2 months ago
+sMonth = sMonth.format('YYYY/MM/DD'); //Begging the this month
 
 /* ----- season ----- */
 var season = year;
@@ -136,11 +105,9 @@ function MonthlySpend(start, end) {
 }
 
 function SpendNotify() {
-  var START = new Date();
-  
   /* --- 日報 --- */
-  var money1 = DailySpend(m1);
-  var money2 = DailySpend(m2);
+  var money1 = DailySpend(Day_m1);
+  var money2 = DailySpend(Day_m2);
   
   var total1 = money1.reduce(function(x, y) { return x + y; }); //reduceで配列の全要素の合計を出す
   var total2 = money2.reduce(function(x, y) { return x + y; }); //同上
@@ -170,11 +137,11 @@ function SpendNotify() {
   /* --- 日報 --- */
   
   /* --- 月報 --- */
-  if(day == 1) { //毎月1日のみ実行
+  if(day == 21) { //毎月1日のみ実行
     //1か月前
-    money1 = MonthlySpend(Month_m1, Month_s);
+    money1 = MonthlySpend(sMonth_m1, sMonth);
     //2か月前
-    money2 = MonthlySpend(Month_m2, Month_m1);
+    money2 = MonthlySpend(sMonth_m2, sMonth_m1);
     
     total1 = money1.reduce(function(x, y) { return x + y; });
     total2 = money2.reduce(function(x, y) { return x + y; });
@@ -204,5 +171,5 @@ function SpendNotify() {
   }
   /* --- 月報 --- */
   
-  Logger.log('=== SCORE : ' + (new Date() - START)/1000 + ' (sec) ===');
+  Logger.log('=== SCORE : ' + (new Date() - Now)/1000 + ' (sec) ===');
 }
