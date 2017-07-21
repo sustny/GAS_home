@@ -35,22 +35,27 @@ var m2day = Utilities.formatDate(m2, 'JST', 'd');
 m2 = Utilities.formatDate(new Date(m2year, m2month-1, m2day), 'JST', 'yyyy/MM/dd');
 /* ----- 2 days ago ----- */
 
-/* ----- last month ----- */
+/* ----- Begging the this month ----- */
+var Month_s = Moment.moment([year, month-1, 1]);
+Month_s = Month_s.format('YYYY/MM/DD');
+/* ----- Begging the this month ----- */
+
+/* ----- Begging the last month ----- */
 var Month_m1 = Moment.moment([year, month-2, 1]);
 if(month == 1) {
   Month_m1 = Moment.moment([year-1, 11, 1]);
 }
-Month_m1 = Month_m1.format('YYYY/M/D');
+Month_m1 = Month_m1.format('YYYY/MM/DD');
 /* ----- last month ----- */
 
-/* ----- 2 months ago ----- */
+/* ----- Begging the 2 months ago ----- */
 var Month_m2 = Moment.moment([year, month-3, 1]);
 if(month == 1) {
   Month_m2 = Moment.moment([year-1, 10, 1]);
 } else if(month == 2) {
   Month_m2 = Moment.moment([year-1, 11, 1]);
 }
-Month_m2 = Month_m2.format('YYYY/M/D');
+Month_m2 = Month_m2.format('YYYY/MM/DD');
 /* ----- 2 months ago ----- */
 
 /* ----- season ----- */
@@ -95,9 +100,7 @@ function DailySpend(d) {
   return money;
 }
 
-function MonthlySpend() {
-  var start = Utilities.formatDate(new Date(year,month-2,1), 'JST', 'yyyy/MM/dd'); //Test code
-  var end = Utilities.formatDate(new Date(year,month-1,1), 'JST', 'yyyy/MM/dd'); //Test code
+function MonthlySpend(start, end) {
   /* ----- 開始行の検索 ----- */
   for(var i=1;i<DAT.length;i++) {
     var target = Utilities.formatDate(DAT[i][1], 'JST', 'yyyy/MM/dd');
@@ -132,21 +135,6 @@ function MonthlySpend() {
   return money;
 }
 
-function SpendNotify_Test() {
-  var monthSpend = MonthlySpend();
-  Logger.log(monthSpend);
-  
-  var total = monthSpend.reduce(function(x, y) { return x + y; });
-  
-  Logger.log(Math.round(total));
-  
-  var m = Moment.moment('2016/1/8');
-  Logger.log(m.format('YYYY/M/D'));
-  
-  Logger.log(Month_m1);
-  Logger.log(Month_m2);
-}
-
 function SpendNotify() {
   var START = new Date();
   
@@ -158,7 +146,7 @@ function SpendNotify() {
   var total2 = money2.reduce(function(x, y) { return x + y; }); //同上
   var diff = Math.round(total1 - total2);
   
-  var message = '[自動送信]昨日の支出: ' + Separate(total1) + '円';
+  var message = '[日報]昨日の支出: ' + Separate(total1) + '円';
   if(diff > 0) {
     message += '(おとといより' + Separate(Math.abs(diff)) + '円増加)';
   } else if(diff < 0) {
@@ -176,15 +164,43 @@ function SpendNotify() {
   }
   message += ' #sustny_memo';
   
-  if(total1 == 0) {
-    return 0;
+  if(total1 != 0) {
+    Twitter(message);
   }
-  Twitter(message);
   /* --- 日報 --- */
   
   /* --- 月報 --- */
   if(day == 1) { //毎月1日のみ実行
-    //この辺を書いていくんだけど前月との比較をするかどうかが悩みどころ
+    //1か月前
+    money1 = MonthlySpend(Month_m1, Month_s);
+    //2か月前
+    money2 = MonthlySpend(Month_m2, Month_m1);
+    
+    total1 = money1.reduce(function(x, y) { return x + y; });
+    total2 = money2.reduce(function(x, y) { return x + y; });
+    diff = Math.round(total1 - total2);
+    
+    message = '[月報]先月の支出: ' + Separate(Math.round(total1)) + '円';
+    
+    if(diff > 0) {
+      message += '(先々月より' + Separate(Math.abs(diff)) + '円増加)';
+    } else if(diff < 0) {
+      message += '(先々月より' + Separate(Math.abs(diff)) + '円節約)';
+    } else {
+      message += '(先々月と同額)';
+    }
+    message += '\n【内訳】';
+    for(var i=0;i<6;i++) {
+      if(money1[i] != 0) {
+        if(i != 0) { message += ' / '; }
+        message += DAT[2][i+7] + ': ' + Separate(Math.round(money1[i])) + '円';
+      }
+    }
+    message += ' #sustny_memo';
+    
+    if(total1 != 0) {
+      Twitter(message);
+    }
   }
   /* --- 月報 --- */
   
