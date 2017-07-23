@@ -46,7 +46,7 @@ function Separate(num) {
 function DailySpend(d) {
   /* ----- 開始行の検索 ----- */
   for(var i=1;i<DAT.length;i++) {
-    var target = Utilities.formatDate(DAT[i][1], 'JST', 'yyyy/MM/dd');
+    var target = Moment.moment(DAT[i][1]).clone().format('YYYY/MM/DD');
     if(target == d) {
       var sRow = i; //対象開始行
       break;
@@ -56,7 +56,7 @@ function DailySpend(d) {
   /* ----- 計算 ----- */
   var money = [0, 0, 0, 0, 0, 0]; //クソダサ初期化
   for(i=sRow;i<DAT.length;i++) {
-    target = Utilities.formatDate(DAT[i][1], 'JST', 'yyyy/MM/dd');
+    target = Moment.moment(DAT[i][1]).clone().format('YYYY/MM/DD');
     if(target != d) { break; }
     
     for(var j=0;j<6;j++) {
@@ -72,7 +72,7 @@ function DailySpend(d) {
 function MonthlySpend(start, end) {
   /* ----- 開始行の検索 ----- */
   for(var i=1;i<DAT.length;i++) {
-    var target = Utilities.formatDate(DAT[i][1], 'JST', 'yyyy/MM/dd');
+    var target = Moment.moment(DAT[i][1]).clone().format('YYYY/MM/DD');
     if(target >= start) {
       var sRow = i; //対象開始行
       break;
@@ -82,7 +82,7 @@ function MonthlySpend(start, end) {
   
   /* ----- 終了行の検索 ----- */
   for(var i=sRow;i<DAT.length;i++) {
-    var target = Utilities.formatDate(DAT[i][1], 'JST', 'yyyy/MM/dd');
+    target = Moment.moment(DAT[i][1]).clone().format('YYYY/MM/DD');
     if(target >= end) {
       var eRow = i-1; //対象最終行
       break;
@@ -137,7 +137,7 @@ function SpendNotify() {
   /* --- 日報 --- */
   
   /* --- 月報 --- */
-  if(day == 21) { //毎月1日のみ実行
+  if(day == 1) { //毎月1日のみ実行
     //1か月前
     money1 = MonthlySpend(sMonth_m1, sMonth);
     //2か月前
@@ -171,5 +171,5 @@ function SpendNotify() {
   }
   /* --- 月報 --- */
   
-  Logger.log('=== SCORE : ' + (new Date() - Now)/1000 + ' (sec) ===');
+  Logger.log('=== SCORE : ' + (Moment.moment() - Now)/1000 + ' (sec) ===');
 }
