@@ -166,7 +166,7 @@ function SpendNotify() {
     message += ' #sustny_memo';
     
     if(total1 != 0) {
-      Twitter(message);
+      Mstdn(message);
     }
   }
   /* --- 月報 --- */
