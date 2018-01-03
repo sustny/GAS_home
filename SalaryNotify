@@ -1,5 +1,37 @@
+//
+// SalaryNotify.gs
+// Created on 2017-09-30 18:00
+// Created by sustny(http://sustny.me/)
+//
+// Referenced: https://qiita.com/tadaken3/items/1c86dde501bb466f2d1d
+// Referenced: https://as.memordm.com/gas/scriptproperties/
+//
+
+function separate(num){
+    return String(num).replace( /(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+}
+
+function postUpdateToots(message,token,url){
+  var url = url
+  var options =
+   {
+     "method"  : "post",
+     "payload" : "status=" + message,
+     "headers" : {"Authorization" : "Bearer "+ token}
+
+   };
+   UrlFetchApp.fetch(url,options);
+}
+
+function Mstdn(message){
+  var mstdn_token = PropertiesService.getScriptProperties().getProperty("MstdnJpToken");
+  var mstdn_url = "https://mstdn.jp/api/v1/statuses";
+
+  postUpdateToots(message,mstdn_token,mstdn_url);
+}
+
 function MakeSalaryMessage() {
-  var sheet = SpreadsheetApp.getActive().getSheetByName('*** シート名 ***');
+  var sheet = SpreadsheetApp.getActive().getSheetByName('5公開用'); //会社が変わればここも変わるので忘れないこと
   var dat = sheet.getDataRange().getValues();
   
   //対象月の取得
@@ -36,6 +68,6 @@ function MakeSalaryMessage() {
     var message = "@sustny 早く給料を入力しろ #sustny_memo";
   }
   
-  postUpdateStatus(message); //Twitterに投稿するようの別途用意した関数
+  Mstdn(message);
   
 }
