@@ -47,7 +47,7 @@ function MakeSalaryMessage() {
     }
   }
   
-  for(i=row;i<(row+12);i++) {
+  for(i=0;i<(row+12);i++) { //2018/09/01 "i=row" を "i=0" に変更(バグりませんように)
     if(dat[i][1] == MONTH) {
       row = i;
       i = dat.length;
