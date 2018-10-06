@@ -1,7 +1,7 @@
 //
 // SalaryNotify.gs
 // Created on 2017-09-30 18:00
-// Created by sustny(http://sustny.me/)
+// Created by sustny(https://sustny.jp/)
 //
 // Referenced: https://qiita.com/tadaken3/items/1c86dde501bb466f2d1d
 // Referenced: https://as.memordm.com/gas/scriptproperties/
@@ -40,6 +40,7 @@ function MakeSalaryMessage() {
   YEAR = parseInt(YEAR.clone().subtract(1,'months').format('YYYY')); //年数値化(前月)
   MONTH = parseInt(MONTH.clone().subtract(1,'months').format('M')); //月数値化(前月)
   
+  //対象の年が書いてある行探し
   for(var i=1;i<dat.length;i++) {
     if(dat[i][0] == YEAR) {
       var row = i;
@@ -47,27 +48,27 @@ function MakeSalaryMessage() {
     }
   }
   
-  for(i=0;i<(row+12);i++) { //2018/09/01 "i=row" を "i=0" に変更(バグりませんように)
-    if(dat[i][1] == MONTH) {
+  //対象の月が書いてある行探し
+  var startSearch = row; //2018/10/06 i=row のまま関数を回すと、elseでrowの値を "" にしてしまい狂ってしまうため追加
+  for(i=startSearch;i<(startSearch+12);i++) { //対象月を探索し始める行から+12(12ヶ月分/13か？)行探索する
+    if(dat[i][1] == MONTH) { //対象が見つかり次第このifを抜ける
       row = i;
       i = dat.length;
-    } else {
+      break;
+    } else { //対象じゃない場合rowには "" を入れ続ける： "" のままifが終わったら、下のifでelseに入り "対象データなし" となる
       row = "";
     }
   }
   
-  Logger.log("対象: " + YEAR + "年" + MONTH + "月");
-  
   if(row != "") {
     Logger.log("格納先: "+row+"行目");
     var num = separate(dat[row][5]);
-    var message = "[自動送信]" + YEAR + "年" + MONTH + "月" + "の給料は手取りで" + num + "円でした。 #sustny_saraly";
-    Logger.log(message);
+    var message = "[自動送信]" + YEAR + "年" + MONTH + "月" + "の給料は手取りで" + num + "円でした。 #sustny_salary";
   } else {
     Logger.log("対象データなし");
-    var message = "@sustny 早く給料を入力しろ #sustny_memo";
+    var message = "@sustny 早く給料を入力しろ #sustny_salary";
   }
   
   Mstdn(message);
-  
+  Logger.log(message);
 }
